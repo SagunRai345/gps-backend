@@ -27,7 +27,8 @@ def gps_data_handler():
     lng = request.args.get('longitude')
     speed = request.args.get('speed')
 
-    print("Received: ", lat, lng, speed)
+    
+    print(f"Received GPS Data -> Latitude: {lat}, Longitude: {lng}, Speed: {speed}")
 
     if lat and lng and speed:
         # Append new GPS data

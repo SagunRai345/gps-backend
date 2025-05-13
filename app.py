@@ -1,9 +1,25 @@
-from flask import Flask, render_template, request
+from flask import Flask, request
 
 app = Flask(__name__)
 
-# Store GPS data
+# To store GPS data
 gps_data = []
+
+@app.route('/')
+def home():
+    # Display the title and the current GPS data
+    return """
+    <html>
+        <head><title>GPS DATA LOGGER</title></head>
+        <body>
+            <h1>GPS DATA LOGGER</h1>
+            <h2>Current GPS Data:</h2>
+            <ul>
+                """ + ''.join([f"<li>Latitude: {data['lat']}, Longitude: {data['lng']}, Speed: {data['speed']} km/h</li>" for data in gps_data]) + """
+            </ul>
+        </body>
+    </html>
+    """
 
 @app.route('/gps_data', methods=['GET'])
 def gps_data_handler():
@@ -12,18 +28,12 @@ def gps_data_handler():
     speed = request.args.get('speed')
 
     if lat and lng and speed:
+        # Append new GPS data
         gps_data.append({'lat': lat, 'lng': lng, 'speed': speed})
         return "Data stored", 200
-    return "Missing data", 400
-
-@app.route('/')
-def index():
-    # Display GPS data on the home page
-    if gps_data:
-        last_data = gps_data[-1]  # Get the last data point
-        return render_template('index.html', data=last_data)
     else:
-        return render_template('index.html', data=None)
+        # Return a response indicating missing data
+        return "Missing data", 400
 
 if __name__ == '__main__':
     app.run(debug=True)

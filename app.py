@@ -37,3 +37,4 @@ def gps_data_handler():
 
 if __name__ == '__main__':
     app.run(debug=True)
+print("Received: ", lat, lng, speed)

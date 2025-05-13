@@ -1,19 +1,12 @@
-from flask import Flask, request, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-# To store GPS data
+# Store GPS data
 gps_data = []
-
-# Replace with your actual API key
-API_KEY = 'your_api_key_here'
 
 @app.route('/gps_data', methods=['GET'])
 def gps_data_handler():
-    api_key = request.args.get('api_key')
-    if api_key != API_KEY:
-        return "Unauthorized: Invalid API key", 403
-
     lat = request.args.get('latitude')
     lng = request.args.get('longitude')
     speed = request.args.get('speed')
@@ -21,8 +14,7 @@ def gps_data_handler():
     if lat and lng and speed:
         gps_data.append({'lat': lat, 'lng': lng, 'speed': speed})
         return "Data stored", 200
-    else:
-        return "Missing data", 400
+    return "Missing data", 400
 
 @app.route('/')
 def index():

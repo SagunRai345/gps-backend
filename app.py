@@ -1,41 +1,37 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
 # To store GPS data
 gps_data = []
 
-@app.route('/')
-def home():
-    # Display the title and the current GPS data
-    return """
-    <html>
-        <head><title>GPS DATA LOGGER</title></head>
-        <body>
-            <h1>GPS DATA LOGGER</h1>
-            <h2>Current GPS Data:</h2>
-            <ul>
-                """ + ''.join([f"<li>Latitude: {data['lat']}, Longitude: {data['lng']}, Speed: {data['speed']} km/h</li>" for data in gps_data]) + """
-            </ul>
-            <p>If no data is received yet, it will appear here as soon as it's available.</p>
-        </body>
-    </html>
-    """
+# Replace with your actual API key
+API_KEY = 'your_api_key_here'
 
 @app.route('/gps_data', methods=['GET'])
 def gps_data_handler():
+    api_key = request.args.get('api_key')
+    if api_key != API_KEY:
+        return "Unauthorized: Invalid API key", 403
+
     lat = request.args.get('latitude')
     lng = request.args.get('longitude')
     speed = request.args.get('speed')
 
     if lat and lng and speed:
-        # Append new GPS data
         gps_data.append({'lat': lat, 'lng': lng, 'speed': speed})
         return "Data stored", 200
     else:
-        # Return a response indicating missing data
         return "Missing data", 400
+
+@app.route('/')
+def index():
+    # Display GPS data on the home page
+    if gps_data:
+        last_data = gps_data[-1]  # Get the last data point
+        return render_template('index.html', data=last_data)
+    else:
+        return render_template('index.html', data=None)
 
 if __name__ == '__main__':
     app.run(debug=True)
-

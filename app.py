@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 gps_data = []
 
-@app.route('/gps_data', methods=['GET'])
+@app.route('/')
 def gps_data_handler():
     lat = request.args.get('latitude')
     lng = request.args.get('longitude')
